@@ -3027,7 +3027,7 @@ namespace Microsoft.Azure.Management.Samples.Common
                 {
                     using (var client = new HttpClient())
                     {
-                        client.Timeout = TimeSpan.FromSeconds(300);
+                        client.Timeout = System.TimeSpan.FromSeconds(300);
                         if (headers != null)
                         {
                             foreach (var header in headers)
@@ -3127,7 +3127,7 @@ namespace Microsoft.Azure.Management.Samples.Common
                 {
                     var topicClient = new TopicClient(connectionString, topicName);
                     topicClient.SendAsync(new Message(Encoding.UTF8.GetBytes(message))).Wait();
-                    topicClient.Close();
+                    topicClient.CloseAsync().Wait();
                 }
                 catch (Exception)
                 {
@@ -3143,7 +3143,7 @@ namespace Microsoft.Azure.Management.Samples.Common
                 {
                     var queueClient = new QueueClient(connectionString, queueName, ReceiveMode.PeekLock);
                     queueClient.SendAsync(new Message(Encoding.UTF8.GetBytes(message))).Wait();
-                    queueClient.Close();
+                    queueClient.CloseAsync().Wait();
                 }
                 catch (Exception)
                 {

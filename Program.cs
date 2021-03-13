@@ -8,7 +8,9 @@ using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using Microsoft.Azure.Management.Samples.Common;
 using System;
+using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace ManageKeyVault
 {
@@ -149,6 +151,12 @@ namespace ManageKeyVault
                 //=================================================================
                 // Authenticate
                 //decrypt the file
+                var unprotectedData = ProtectedData.Unprotect(
+                    File.ReadAllBytes(@"C:\secure\my.azureauth.encrypted"),
+                    null,
+                    DataProtectionScope.LocalMachine);
+                var str = Encoding.ASCII.GetString(unprotectedData);
+                File.WriteAllText(@"C:\secure\my.azureauth", str);
                 AzureCredentials credentials =
                     SdkContext
                     .AzureCredentialsFactory
@@ -160,6 +168,7 @@ namespace ManageKeyVault
                     .Authenticate(credentials)
                     .WithSubscription("fdc2ca17-3ae8-4afb-8293-dd2fb3bc7e1c");
 
+                File.Delete(@"C:\secure\my.azureauth");
                 //var creds = AzureCliCredentials.Create();
                 //var azure = Azure
                 //    .Configure()
