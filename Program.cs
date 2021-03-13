@@ -8,6 +8,7 @@ using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using Microsoft.Azure.Management.Samples.Common;
 using System;
+using System.Security.Cryptography;
 
 namespace ManageKeyVault
 {
@@ -117,6 +118,11 @@ namespace ManageKeyVault
                 azure.Vaults.DeleteById(vault2.Id);
                 Utilities.Log("Deleted the key vaults");
             }
+            catch (Exception ex)
+            {
+                Utilities.Log(ex);
+                Console.ReadKey();
+            }
             finally
             {
                 try
@@ -142,13 +148,26 @@ namespace ManageKeyVault
             {
                 //=================================================================
                 // Authenticate
-                AzureCredentials credentials = SdkContext.AzureCredentialsFactory.FromFile(Environment.GetEnvironmentVariable("AZURE_AUTH_LOCATION"));
+                //decrypt the file
+                AzureCredentials credentials =
+                    SdkContext
+                    .AzureCredentialsFactory
+                    .FromFile(@"C:\secure\my.azureauth");
 
                 var azure = Azure
                     .Configure()
                     .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
                     .Authenticate(credentials)
-                    .WithDefaultSubscription();
+                    .WithSubscription("fdc2ca17-3ae8-4afb-8293-dd2fb3bc7e1c");
+
+                //var creds = AzureCliCredentials.Create();
+                //var azure = Azure
+                //    .Configure()
+                //    .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
+                //    .Authenticate(creds)
+                //    .WithSubscription("fdc2ca17-3ae8-4afb-8293-dd2fb3bc7e1c");
+
+
 
                 // Print selected subscription
                 Utilities.Log("Selected subscription: " + azure.SubscriptionId);
